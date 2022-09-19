@@ -2,6 +2,7 @@
 #include <climits>
 #include <cerrno>
 #include <string>
+#include <vector>
 
 // Check if using Emscripten
 #ifdef __EMSCRIPTEN__
@@ -132,151 +133,151 @@ static secp256k1_bulletproof_generators *generators = nullptr;
 // Function prototypes
 
 // Initialize
-EXPORT bool EMSCRIPTEN_KEEPALIVE initialize();
+EXPORT bool EMSCRIPTEN_KEEPALIVE initialize(InstanceData *instanceData);
 
 // Uninistalize
-EXPORT bool EMSCRIPTEN_KEEPALIVE uninitialize();
+EXPORT bool EMSCRIPTEN_KEEPALIVE uninitialize(InstanceData *instanceData);
 
 // Blind size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE blindSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE blindSize(InstanceData *instanceData);
 
 // Blind switch
-EXPORT bool EMSCRIPTEN_KEEPALIVE blindSwitch(uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value);
+EXPORT bool EMSCRIPTEN_KEEPALIVE blindSwitch(InstanceData *instanceData, uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value);
 
 // Blind sum
-EXPORT bool EMSCRIPTEN_KEEPALIVE blindSum(uint8_t *result, const uint8_t *blinds, size_t blindsSizes[], size_t numberOfBlinds, size_t numberOfPositiveBlinds);
+EXPORT bool EMSCRIPTEN_KEEPALIVE blindSum(InstanceData *instanceData, uint8_t *result, const uint8_t *blinds, size_t blindsSizes[], size_t numberOfBlinds, size_t numberOfPositiveBlinds);
 
 // Is valid secret key
-EXPORT bool EMSCRIPTEN_KEEPALIVE isValidSecretKey(const uint8_t *secretKey, size_t secretKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE isValidSecretKey(InstanceData *instanceData, const uint8_t *secretKey, size_t secretKeySize);
 
 // Is valid public key
-EXPORT bool EMSCRIPTEN_KEEPALIVE isValidPublicKey(const uint8_t *publicKey, size_t publicKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE isValidPublicKey(InstanceData *instanceData, const uint8_t *publicKey, size_t publicKeySize);
 
 // Is valid commit
-EXPORT bool EMSCRIPTEN_KEEPALIVE isValidCommit(const uint8_t *commit, size_t commitSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE isValidCommit(InstanceData *instanceData, const uint8_t *commit, size_t commitSize);
 
 // Is valid single-signer signature
-EXPORT bool EMSCRIPTEN_KEEPALIVE isValidSingleSignerSignature(const uint8_t *signature, size_t signatureSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE isValidSingleSignerSignature(InstanceData *instanceData, const uint8_t *signature, size_t signatureSize);
 
 // Bulletproof size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE bulletproofProofSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE bulletproofProofSize(InstanceData *instanceData);
 
 // Create bulletproof
-EXPORT bool EMSCRIPTEN_KEEPALIVE createBulletproof(uint8_t *proof, char *proofSize, const uint8_t *blind, size_t blindSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *privateNonce, size_t privateNonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE createBulletproof(InstanceData *instanceData, uint8_t *proof, char *proofSize, const uint8_t *blind, size_t blindSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *privateNonce, size_t privateNonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize);
 
 // Create bulletproof blindless
-EXPORT bool EMSCRIPTEN_KEEPALIVE createBulletproofBlindless(uint8_t *proof, char *proofSize, uint8_t *tauX, size_t tauXSize, const uint8_t *tOne, size_t tOneSize, const uint8_t *tTwo, size_t tTwoSize, const uint8_t *commit, size_t commitSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE createBulletproofBlindless(InstanceData *instanceData, uint8_t *proof, char *proofSize, uint8_t *tauX, size_t tauXSize, const uint8_t *tOne, size_t tOneSize, const uint8_t *tTwo, size_t tTwoSize, const uint8_t *commit, size_t commitSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize);
 
 // Bulletproof message size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE bulletproofMessageSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE bulletproofMessageSize(InstanceData *instanceData);
 
 // Rewind bulletproof
-EXPORT bool EMSCRIPTEN_KEEPALIVE rewindBulletproof(char *value, uint8_t *blind, uint8_t *message, const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *nonce, size_t nonceSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE rewindBulletproof(InstanceData *instanceData, char *value, uint8_t *blind, uint8_t *message, const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *nonce, size_t nonceSize);
 
 // Verify bulletproof
-EXPORT bool EMSCRIPTEN_KEEPALIVE verifyBulletproof(const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *extraCommit, size_t extraCommitSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE verifyBulletproof(InstanceData *instanceData, const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *extraCommit, size_t extraCommitSize);
 
 // Public key size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE publicKeySize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE publicKeySize(InstanceData *instanceData);
 
 // Public key from secret key
-EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyFromSecretKey(uint8_t *publicKey, const uint8_t *secretKey, size_t secretKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyFromSecretKey(InstanceData *instanceData, uint8_t *publicKey, const uint8_t *secretKey, size_t secretKeySize);
 
 // Public key from data
-EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyFromData(uint8_t *publicKey, const uint8_t *data, size_t dataSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyFromData(InstanceData *instanceData, uint8_t *publicKey, const uint8_t *data, size_t dataSize);
 
 // Uncompressed public key size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE uncompressedPublicKeySize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE uncompressedPublicKeySize(InstanceData *instanceData);
 
 // Uncompress public key
-EXPORT bool EMSCRIPTEN_KEEPALIVE uncompressPublicKey(uint8_t *uncompressedPublicKey, const uint8_t *publicKey, size_t publicKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE uncompressPublicKey(InstanceData *instanceData, uint8_t *uncompressedPublicKey, const uint8_t *publicKey, size_t publicKeySize);
 
 // Secret key size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE secretKeySize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE secretKeySize(InstanceData *instanceData);
 
 // Secret key tweak add
-EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakAdd(InstanceData *instanceData, uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Public key tweak add
-EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakAdd(InstanceData *instanceData, uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Secret key tweak multiply
-EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakMultiply(InstanceData *instanceData, uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Public key tweak multiply
-EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakMultiply(InstanceData *instanceData, uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Shared secret key from secret key and public key
-EXPORT bool EMSCRIPTEN_KEEPALIVE sharedSecretKeyFromSecretKeyAndPublicKey(uint8_t *sharedSecretKey, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *publicKey, size_t publicKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE sharedSecretKeyFromSecretKeyAndPublicKey(InstanceData *instanceData, uint8_t *sharedSecretKey, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *publicKey, size_t publicKeySize);
 
 // Commit size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE commitSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE commitSize(InstanceData *instanceData);
 
 // Pedersen commit
-EXPORT bool EMSCRIPTEN_KEEPALIVE pedersenCommit(uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value);
+EXPORT bool EMSCRIPTEN_KEEPALIVE pedersenCommit(InstanceData *instanceData, uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value);
 
 // Pedersen commit sum
-EXPORT bool EMSCRIPTEN_KEEPALIVE pedersenCommitSum(uint8_t *result, const uint8_t *positiveCommits, size_t positiveCommitsSizes[], size_t numberOfPositiveCommits, const uint8_t *negativeCommits, size_t negativeCommitsSizes[], size_t numberOfNegativeCommits);
+EXPORT bool EMSCRIPTEN_KEEPALIVE pedersenCommitSum(InstanceData *instanceData, uint8_t *result, const uint8_t *positiveCommits, size_t positiveCommitsSizes[], size_t numberOfPositiveCommits, const uint8_t *negativeCommits, size_t negativeCommitsSizes[], size_t numberOfNegativeCommits);
 
 // Pedersen commit to public key
-EXPORT bool EMSCRIPTEN_KEEPALIVE pedersenCommitToPublicKey(uint8_t *publicKey, const uint8_t *commit, size_t commitSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE pedersenCommitToPublicKey(InstanceData *instanceData, uint8_t *publicKey, const uint8_t *commit, size_t commitSize);
 
 // Public key to Pedersen commit
-EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyToPedersenCommit(uint8_t *commit, const uint8_t *publicKey, size_t publicKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyToPedersenCommit(InstanceData *instanceData, uint8_t *commit, const uint8_t *publicKey, size_t publicKeySize);
 
 // Single-signer signature size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE singleSignerSignatureSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE singleSignerSignatureSize(InstanceData *instanceData);
 
 // Seed size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE seedSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE seedSize(InstanceData *instanceData);
 
 // Create single-signer signature
-EXPORT bool EMSCRIPTEN_KEEPALIVE createSingleSignerSignature(uint8_t *signature, const uint8_t *message, size_t messageSize, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *secretNonce, size_t secretNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize, const uint8_t *seed, size_t seedSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE createSingleSignerSignature(InstanceData *instanceData, uint8_t *signature, const uint8_t *message, size_t messageSize, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *secretNonce, size_t secretNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize, const uint8_t *seed, size_t seedSize);
 
 // Add single-signer signatures
-EXPORT bool EMSCRIPTEN_KEEPALIVE addSingleSignerSignatures(uint8_t *result, const uint8_t *signatures, size_t signaturesSizes[], size_t numberOfSignatures, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE addSingleSignerSignatures(InstanceData *instanceData, uint8_t *result, const uint8_t *signatures, size_t signaturesSizes[], size_t numberOfSignatures, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize);
 
 // Verify single-signer signature
-EXPORT bool EMSCRIPTEN_KEEPALIVE verifySingleSignerSignature(const uint8_t *signature, size_t signatureSize, const uint8_t *message, size_t messageSize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicKeyTotal, size_t publicKeyTotalSize, bool isPartial);
+EXPORT bool EMSCRIPTEN_KEEPALIVE verifySingleSignerSignature(InstanceData *instanceData, const uint8_t *signature, size_t signatureSize, const uint8_t *message, size_t messageSize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicKeyTotal, size_t publicKeyTotalSize, bool isPartial);
 
 // Single-signer signature from data
-EXPORT bool EMSCRIPTEN_KEEPALIVE singleSignerSignatureFromData(uint8_t *signature, const uint8_t *data, size_t dataSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE singleSignerSignatureFromData(InstanceData *instanceData, uint8_t *signature, const uint8_t *data, size_t dataSize);
 
 // Uncompact single-signer signature size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE uncompactSingleSignerSignatureSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE uncompactSingleSignerSignatureSize(InstanceData *instanceData);
 
 // Compact single-signer signature
-EXPORT bool EMSCRIPTEN_KEEPALIVE compactSingleSignerSignature(uint8_t *result, const uint8_t *signature, size_t signatureSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE compactSingleSignerSignature(InstanceData *instanceData, uint8_t *result, const uint8_t *signature, size_t signatureSize);
 
 // Uncompact single-signer signature
-EXPORT bool EMSCRIPTEN_KEEPALIVE uncompactSingleSignerSignature(uint8_t *result, const uint8_t *signature, size_t signatureSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE uncompactSingleSignerSignature(InstanceData *instanceData, uint8_t *result, const uint8_t *signature, size_t signatureSize);
 
 // Combine public keys
-EXPORT bool EMSCRIPTEN_KEEPALIVE combinePublicKeys(uint8_t *result, const uint8_t *publicKeys, size_t publicKeysSizes[], size_t numberOfPublicKeys);
+EXPORT bool EMSCRIPTEN_KEEPALIVE combinePublicKeys(InstanceData *instanceData, uint8_t *result, const uint8_t *publicKeys, size_t publicKeysSizes[], size_t numberOfPublicKeys);
 
 // Nonce size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE nonceSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE nonceSize(InstanceData *instanceData);
 
 // Create secret nonce
-EXPORT bool EMSCRIPTEN_KEEPALIVE createSecretNonce(uint8_t *nonce, const uint8_t *seed, size_t seedSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE createSecretNonce(InstanceData *instanceData, uint8_t *nonce, const uint8_t *seed, size_t seedSize);
 
 // Maximum message hash signature size
-EXPORT size_t EMSCRIPTEN_KEEPALIVE maximumMessageHashSignatureSize();
+EXPORT size_t EMSCRIPTEN_KEEPALIVE maximumMessageHashSignatureSize(InstanceData *instanceData);
 
 // Create message hash signature
-EXPORT bool EMSCRIPTEN_KEEPALIVE createMessageHashSignature(uint8_t *signature, char *signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *secretKey, size_t secretKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE createMessageHashSignature(InstanceData *instanceData, uint8_t *signature, char *signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *secretKey, size_t secretKeySize);
 
 // Verify message hash signature
-EXPORT bool EMSCRIPTEN_KEEPALIVE verifyMessageHashSignature(const uint8_t *signature, size_t signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *publicKey, size_t publicKeySize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE verifyMessageHashSignature(InstanceData *instanceData, const uint8_t *signature, size_t signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *publicKey, size_t publicKeySize);
 
 // Is zero array
-static bool isZeroArray(void *value, size_t size);
+static bool isZeroArray(InstanceData *instanceData, void *value, size_t size);
 
 
 // Supporting function implementation
 
 // Initialize
-bool initialize() {
+bool initialize(InstanceData *instanceData) {
 
 	// Check if creating context failed
 	context = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
@@ -287,7 +288,7 @@ bool initialize() {
 	}
 	
 	// Check if creating scratch space failed
-	scratchSpace = secp256k1_scratch_space_create(context, SCRATCH_SPACE_SIZE);
+	scratchSpace = secp256k1_scratch_space_create(instanceData->context, SCRATCH_SPACE_SIZE);
 	if(!scratchSpace) {
 	
 		// Return false
@@ -295,7 +296,7 @@ bool initialize() {
 	}
 	
 	// Check if creating generators failed
-	generators = secp256k1_bulletproof_generators_create(context, &secp256k1_generator_const_g, NUMBER_OF_GENERATORS);
+	generators = secp256k1_bulletproof_generators_create(instanceData->context, &secp256k1_generator_const_g, NUMBER_OF_GENERATORS);
 	if(!generators) {
 	
 		// Return false
@@ -307,13 +308,13 @@ bool initialize() {
 }
 
 // Uninitialize
-bool uninitialize() {
+bool uninitialize(InstanceData *instanceData) {
 
 	// Check if generators exist
 	if(generators) {
 	
 		// Destroy generators
-		secp256k1_bulletproof_generators_destroy(context, generators);
+		secp256k1_bulletproof_generators_destroy(instanceData->context, generators);
 		
 		// Clear generators
 		generators = nullptr;
@@ -344,14 +345,14 @@ bool uninitialize() {
 }
 
 // Blind size
-size_t blindSize() {
+size_t blindSize(InstanceData *instanceData) {
 
 	// Return blind size
 	return BLIND_SIZE;
 }
 
 // Blind switch
-bool blindSwitch(uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value) {
+bool blindSwitch(InstanceData *instanceData, uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value) {
 
 	// Check if blind is invalid
 	if(blindSize != BLIND_SIZE) {
@@ -371,7 +372,7 @@ bool blindSwitch(uint8_t *result, const uint8_t *blind, size_t blindSize, const 
 	}
 	
 	// Check if performing blind switch failed
-	if(!secp256k1_blind_switch(context, result, blind, numericValue, &secp256k1_generator_const_h, &secp256k1_generator_const_g, &GENERATOR_J_PUBLIC)) {
+	if(!secp256k1_blind_switch(instanceData->context, result, blind, numericValue, &secp256k1_generator_const_h, &secp256k1_generator_const_g, &GENERATOR_J_PUBLIC)) {
 	
 		// Return false
 		return false;
@@ -382,10 +383,10 @@ bool blindSwitch(uint8_t *result, const uint8_t *blind, size_t blindSize, const 
 }
 
 // Blind sum
-bool blindSum(uint8_t *result, const uint8_t *blinds, size_t blindsSizes[], size_t numberOfBlinds, size_t numberOfPositiveBlinds) {
+bool blindSum(InstanceData *instanceData, uint8_t *result, const uint8_t *blinds, size_t blindsSizes[], size_t numberOfBlinds, size_t numberOfPositiveBlinds) {
 
 	// Go through all blinds
-	const uint8_t *blindsAddresses[numberOfBlinds];
+	vector<const uint8_t *> blindsAddresses(numberOfBlinds);
 	for(size_t i = 0; i < numberOfBlinds; ++i) {
 	
 		// Check if blind is invalid
@@ -400,7 +401,7 @@ bool blindSum(uint8_t *result, const uint8_t *blinds, size_t blindsSizes[], size
 	}
 	
 	// Check if performing pedersen blind sum failed
-	if(!secp256k1_pedersen_blind_sum(context, result, blindsAddresses, numberOfBlinds, numberOfPositiveBlinds))
+	if(!secp256k1_pedersen_blind_sum(instanceData->context, result, blindsAddresses.data(), numberOfBlinds, numberOfPositiveBlinds))
 	
 		// Return false
 		return false;
@@ -410,7 +411,7 @@ bool blindSum(uint8_t *result, const uint8_t *blinds, size_t blindsSizes[], size
 }
 
 // Is valid secret key
-bool isValidSecretKey(const uint8_t *secretKey, size_t secretKeySize) {
+bool isValidSecretKey(InstanceData *instanceData, const uint8_t *secretKey, size_t secretKeySize) {
 
 	// Check if secret key size is invalid
 	if(secretKeySize != SECRET_KEY_SIZE) {
@@ -420,7 +421,7 @@ bool isValidSecretKey(const uint8_t *secretKey, size_t secretKeySize) {
 	}
 
 	// Check if cannot verify secret key
-	if(!secp256k1_ec_seckey_verify(context, secretKey)) {
+	if(!secp256k1_ec_seckey_verify(instanceData->context, secretKey)) {
 		
 		// Return false
 		return false;
@@ -431,7 +432,7 @@ bool isValidSecretKey(const uint8_t *secretKey, size_t secretKeySize) {
 }
 
 // Is valid public key
-bool isValidPublicKey(const uint8_t *publicKey, size_t publicKeySize) {
+bool isValidPublicKey(InstanceData *instanceData, const uint8_t *publicKey, size_t publicKeySize) {
 
 	// Check if public key size is invalid
 	if(publicKeySize != PUBLIC_KEY_SIZE) {
@@ -442,7 +443,7 @@ bool isValidPublicKey(const uint8_t *publicKey, size_t publicKeySize) {
 
 	// Check if cannot verify public key
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Clear memory
 		explicit_bzero(&publicKeyData, sizeof(publicKeyData));
@@ -459,7 +460,7 @@ bool isValidPublicKey(const uint8_t *publicKey, size_t publicKeySize) {
 }
 
 // Is valid commit
-bool isValidCommit(const uint8_t *commit, size_t commitSize) {
+bool isValidCommit(InstanceData *instanceData, const uint8_t *commit, size_t commitSize) {
 
 	// Check if commit size is invalid
 	if(commitSize != COMMIT_SIZE) {
@@ -470,7 +471,7 @@ bool isValidCommit(const uint8_t *commit, size_t commitSize) {
 
 	// Check if cannot verify commit
 	secp256k1_pedersen_commitment commitData;
-	if(!secp256k1_pedersen_commitment_parse(context, &commitData, commit)) {
+	if(!secp256k1_pedersen_commitment_parse(instanceData->context, &commitData, commit)) {
 		
 		// Return false
 		return false;
@@ -481,7 +482,7 @@ bool isValidCommit(const uint8_t *commit, size_t commitSize) {
 }
 
 // Is valid single-signer signature
-bool isValidSingleSignerSignature(const uint8_t *signature, size_t signatureSize) {
+bool isValidSingleSignerSignature(InstanceData *instanceData, const uint8_t *signature, size_t signatureSize) {
 
 	// Check if signature size is invalid
 	if(signatureSize != SINGLE_SIGNER_SIGNATURE_SIZE) {
@@ -492,7 +493,7 @@ bool isValidSingleSignerSignature(const uint8_t *signature, size_t signatureSize
 
 	// Check if cannot verify signature
 	secp256k1_ecdsa_signature signatureData;
-	if(!secp256k1_ecdsa_signature_parse_compact(context, &signatureData, signature)) {
+	if(!secp256k1_ecdsa_signature_parse_compact(instanceData->context, &signatureData, signature)) {
 		
 		// Return false
 		return false;
@@ -503,14 +504,14 @@ bool isValidSingleSignerSignature(const uint8_t *signature, size_t signatureSize
 }
 
 // Bulletproof proof size
-size_t bulletproofProofSize() {
+size_t bulletproofProofSize(InstanceData *instanceData) {
 
 	// Return bulletproof proof size
 	return BULLETPROOF_PROOF_SIZE;
 }
 
 // Create bulletproof
-bool createBulletproof(uint8_t *proof, char *proofSize, const uint8_t *blind, size_t blindSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *privateNonce, size_t privateNonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize) {
+bool createBulletproof(InstanceData *instanceData, uint8_t *proof, char *proofSize, const uint8_t *blind, size_t blindSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *privateNonce, size_t privateNonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize) {
 
 	// Check if blind is invalid
 	if(blindSize != BLIND_SIZE) {
@@ -552,7 +553,7 @@ bool createBulletproof(uint8_t *proof, char *proofSize, const uint8_t *blind, si
 	
 	// Check if creating bulletproof failed
 	size_t numericProofSize = BULLETPROOF_PROOF_SIZE;
-	if(!secp256k1_bulletproof_rangeproof_prove(context, scratchSpace, generators, proof, &numericProofSize, nullptr, nullptr, nullptr, &numericValue, nullptr, &blind, nullptr, 1, &secp256k1_generator_const_h, BITS_PROVEN_PER_RANGE, nonce, privateNonce, extraCommitSize ? extraCommit : nullptr, extraCommitSize, message)) {
+	if(!secp256k1_bulletproof_rangeproof_prove(instanceData->context, instanceData->scratchSpace, instanceData->generators, proof, &numericProofSize, nullptr, nullptr, nullptr, &numericValue, nullptr, &blind, nullptr, 1, &secp256k1_generator_const_h, BITS_PROVEN_PER_RANGE, nonce, privateNonce, extraCommitSize ? extraCommit : nullptr, extraCommitSize, message)) {
 	
 		// Return false
 		return false;
@@ -567,7 +568,7 @@ bool createBulletproof(uint8_t *proof, char *proofSize, const uint8_t *blind, si
 }
 
 // Create bulletproof blindless
-bool createBulletproofBlindless(uint8_t *proof, char *proofSize, uint8_t *tauX, size_t tauXSize, const uint8_t *tOne, size_t tOneSize, const uint8_t *tTwo, size_t tTwoSize, const uint8_t *commit, size_t commitSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize) {
+bool createBulletproofBlindless(InstanceData *instanceData, uint8_t *proof, char *proofSize, uint8_t *tauX, size_t tauXSize, const uint8_t *tOne, size_t tOneSize, const uint8_t *tTwo, size_t tTwoSize, const uint8_t *commit, size_t commitSize, const char *value, const uint8_t *nonce, size_t nonceSize, const uint8_t *extraCommit, size_t extraCommitSize, const uint8_t *message, size_t messageSize) {
 
 	// Check if tau x is invalid
 	if(tauXSize != TAU_X_SIZE) {
@@ -578,7 +579,7 @@ bool createBulletproofBlindless(uint8_t *proof, char *proofSize, uint8_t *tauX, 
 	
 	// Check if parsing t one failed
 	secp256k1_pubkey tOneData;
-	if(!secp256k1_ec_pubkey_parse(context, &tOneData, tOne, tOneSize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &tOneData, tOne, tOneSize)) {
 	
 		// Return false
 		return false;
@@ -586,7 +587,7 @@ bool createBulletproofBlindless(uint8_t *proof, char *proofSize, uint8_t *tauX, 
 	
 	// Check if parsing t two failed
 	secp256k1_pubkey tTwoData;
-	if(!secp256k1_ec_pubkey_parse(context, &tTwoData, tTwo, tTwoSize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &tTwoData, tTwo, tTwoSize)) {
 	
 		// Return false
 		return false;
@@ -594,7 +595,7 @@ bool createBulletproofBlindless(uint8_t *proof, char *proofSize, uint8_t *tauX, 
 	
 	// Check if parsing commit failed
 	secp256k1_pedersen_commitment commitData;
-	if(!secp256k1_pedersen_commitment_parse(context, &commitData, commit)) {
+	if(!secp256k1_pedersen_commitment_parse(instanceData->context, &commitData, commit)) {
 	
 		// Return false
 		return false;
@@ -629,7 +630,7 @@ bool createBulletproofBlindless(uint8_t *proof, char *proofSize, uint8_t *tauX, 
 	const secp256k1_pedersen_commitment *commits[] = {
 		&commitData
 	};
-	if(!secp256k1_bulletproof_rangeproof_prove(context, scratchSpace, generators, proof, &numericProofSize, tauX, &tOneData, &tTwoData, &numericValue, nullptr, nullptr, commits, 1, &secp256k1_generator_const_h, BITS_PROVEN_PER_RANGE, nonce, nullptr, extraCommitSize ? extraCommit : nullptr, extraCommitSize, message)) {
+	if(!secp256k1_bulletproof_rangeproof_prove(instanceData->context, instanceData->scratchSpace, instanceData->generators, proof, &numericProofSize, tauX, &tOneData, &tTwoData, &numericValue, nullptr, nullptr, commits, 1, &secp256k1_generator_const_h, BITS_PROVEN_PER_RANGE, nonce, nullptr, extraCommitSize ? extraCommit : nullptr, extraCommitSize, message)) {
 	
 		// Return false
 		return false;
@@ -644,14 +645,14 @@ bool createBulletproofBlindless(uint8_t *proof, char *proofSize, uint8_t *tauX, 
 }
 
 // Bulletproof message size
-size_t bulletproofMessageSize() {
+size_t bulletproofMessageSize(InstanceData *instanceData) {
 
 	// Return bulletproof message size
 	return BULLETPROOF_MESSAGE_SIZE;
 }
 
 // Rewind bulletproof
-bool rewindBulletproof(char *value, uint8_t *blind, uint8_t *message, const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *nonce, size_t nonceSize) {
+bool rewindBulletproof(InstanceData *instanceData, char *value, uint8_t *blind, uint8_t *message, const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *nonce, size_t nonceSize) {
 	
 	// Check if commit is invalid
 	if(commitSize != COMMIT_SIZE) {
@@ -669,7 +670,7 @@ bool rewindBulletproof(char *value, uint8_t *blind, uint8_t *message, const uint
 	
 	// Check if parsing commit failed
 	secp256k1_pedersen_commitment commitData;
-	if(!secp256k1_pedersen_commitment_parse(context, &commitData, commit)) {
+	if(!secp256k1_pedersen_commitment_parse(instanceData->context, &commitData, commit)) {
 	
 		// Return false
 		return false;
@@ -677,7 +678,7 @@ bool rewindBulletproof(char *value, uint8_t *blind, uint8_t *message, const uint
 	
 	// Check if performing bulletproof rangeproof rewind failed
 	uint64_t numericValue;
-	if(!secp256k1_bulletproof_rangeproof_rewind(context, &numericValue, blind, proof, proofSize, 0, &commitData, &secp256k1_generator_const_h, nonce, nullptr, 0, message)) {
+	if(!secp256k1_bulletproof_rangeproof_rewind(instanceData->context, &numericValue, blind, proof, proofSize, 0, &commitData, &secp256k1_generator_const_h, nonce, nullptr, 0, message)) {
 	
 		// Return false
 		return false;
@@ -692,7 +693,7 @@ bool rewindBulletproof(char *value, uint8_t *blind, uint8_t *message, const uint
 }
 
 // Verify bulletproof
-bool verifyBulletproof(const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *extraCommit, size_t extraCommitSize) {
+bool verifyBulletproof(InstanceData *instanceData, const uint8_t *proof, size_t proofSize, const uint8_t *commit, size_t commitSize, const uint8_t *extraCommit, size_t extraCommitSize) {
 
 	// Check if commit is invalid
 	if(commitSize != COMMIT_SIZE) {
@@ -703,14 +704,14 @@ bool verifyBulletproof(const uint8_t *proof, size_t proofSize, const uint8_t *co
 	
 	// Check if parsing commit failed
 	secp256k1_pedersen_commitment commitData;
-	if(!secp256k1_pedersen_commitment_parse(context, &commitData, commit)) {
+	if(!secp256k1_pedersen_commitment_parse(instanceData->context, &commitData, commit)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if cannot verify bulletproof
-	if(!secp256k1_bulletproof_rangeproof_verify(context, scratchSpace, generators, proof, proofSize, nullptr, &commitData, 1, BITS_PROVEN_PER_RANGE, &secp256k1_generator_const_h, extraCommitSize ? extraCommit : nullptr, extraCommitSize)) {
+	if(!secp256k1_bulletproof_rangeproof_verify(instanceData->context, instanceData->scratchSpace, instanceData->generators, proof, proofSize, nullptr, &commitData, 1, BITS_PROVEN_PER_RANGE, &secp256k1_generator_const_h, extraCommitSize ? extraCommit : nullptr, extraCommitSize)) {
 	
 		// Return false
 		return false;
@@ -721,17 +722,17 @@ bool verifyBulletproof(const uint8_t *proof, size_t proofSize, const uint8_t *co
 }
 
 // Public key size
-size_t publicKeySize() {
+size_t publicKeySize(InstanceData *instanceData) {
 
 	// Return public key size
 	return PUBLIC_KEY_SIZE;
 }
 
 // Public key from secret key
-bool publicKeyFromSecretKey(uint8_t *publicKey, const uint8_t *secretKey, size_t secretKeySize) {
+bool publicKeyFromSecretKey(InstanceData *instanceData, uint8_t *publicKey, const uint8_t *secretKey, size_t secretKeySize) {
 
 	// Check if secret key is invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -739,7 +740,7 @@ bool publicKeyFromSecretKey(uint8_t *publicKey, const uint8_t *secretKey, size_t
 
 	// Check if creating public key from secret key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_create(context, &publicKeyData, secretKey)) {
+	if(!secp256k1_ec_pubkey_create(instanceData->context, &publicKeyData, secretKey)) {
 	
 		// Clear memory
 		explicit_bzero(&publicKeyData, sizeof(publicKeyData));
@@ -750,7 +751,7 @@ bool publicKeyFromSecretKey(uint8_t *publicKey, const uint8_t *secretKey, size_t
 	
 	// Check if serializing public key failed
 	size_t publicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, publicKey, &publicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(instanceData->context, publicKey, &publicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Clear memory
 		explicit_bzero(&publicKeyData, sizeof(publicKeyData));
@@ -767,11 +768,11 @@ bool publicKeyFromSecretKey(uint8_t *publicKey, const uint8_t *secretKey, size_t
 }
 
 // Public key from data
-bool publicKeyFromData(uint8_t *publicKey, const uint8_t *data, size_t dataSize) {
+bool publicKeyFromData(InstanceData *instanceData, uint8_t *publicKey, const uint8_t *data, size_t dataSize) {
 
 	// Check if creating public key from data failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, data, dataSize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, data, dataSize)) {
 	
 		// Return false
 		return false;
@@ -779,7 +780,7 @@ bool publicKeyFromData(uint8_t *publicKey, const uint8_t *data, size_t dataSize)
 	
 	// Check if serializing public key failed
 	size_t publicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, publicKey, &publicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(instanceData->context, publicKey, &publicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Return false
 		return false;
@@ -790,14 +791,14 @@ bool publicKeyFromData(uint8_t *publicKey, const uint8_t *data, size_t dataSize)
 }
 
 // Uncompressed public key size
-size_t uncompressedPublicKeySize() {
+size_t uncompressedPublicKeySize(InstanceData *instanceData) {
 
 	// Return uncompressed public key size
 	return UNCOMPRESSED_PUBLIC_KEY_SIZE;
 }
 
 // Uncompress public key
-bool uncompressPublicKey(uint8_t *uncompressedPublicKey, const uint8_t *publicKey, size_t publicKeySize) {
+bool uncompressPublicKey(InstanceData *instanceData, uint8_t *uncompressedPublicKey, const uint8_t *publicKey, size_t publicKeySize) {
 
 	// Check if public key size is invalid
 	if(publicKeySize != PUBLIC_KEY_SIZE) {
@@ -808,7 +809,7 @@ bool uncompressPublicKey(uint8_t *uncompressedPublicKey, const uint8_t *publicKe
 
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
@@ -816,7 +817,7 @@ bool uncompressPublicKey(uint8_t *uncompressedPublicKey, const uint8_t *publicKe
 	
 	// Check if serializing public key failed
 	size_t uncompressedPublicKeySize = UNCOMPRESSED_PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, uncompressedPublicKey, &uncompressedPublicKeySize, &publicKeyData, SECP256K1_EC_UNCOMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(instanceData->context, uncompressedPublicKey, &uncompressedPublicKeySize, &publicKeyData, SECP256K1_EC_UNCOMPRESSED)) {
 	
 		// Return false
 		return false;
@@ -827,17 +828,17 @@ bool uncompressPublicKey(uint8_t *uncompressedPublicKey, const uint8_t *publicKe
 }
 
 // Secret key size
-size_t secretKeySize() {
+size_t secretKeySize(InstanceData *instanceData) {
 
 	// Return secret key size
 	return SECRET_KEY_SIZE;
 }
 
 // Secret key tweak add
-bool secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool secretKeyTweakAdd(InstanceData *instanceData, uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if secret key is invalid and it's not zero
-	if(!isValidSecretKey(secretKey, secretKeySize) && !isZeroArray(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize) && !isZeroArray(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -851,14 +852,14 @@ bool secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *
 	}
 
 	// Check if performing secret key tweak add failed
-	if(!secp256k1_ec_privkey_tweak_add(context, secretKey, tweak)) {
+	if(!secp256k1_ec_privkey_tweak_add(instanceData->context, secretKey, tweak)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if secret key is invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -869,11 +870,11 @@ bool secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *
 }
 
 // Public key tweak add
-bool publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool publicKeyTweakAdd(InstanceData *instanceData, uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
@@ -887,7 +888,7 @@ bool publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *
 	}
 	
 	// Check if performing public key tweak add failed
-	if(!secp256k1_ec_pubkey_tweak_add(context, &publicKeyData, tweak)) {
+	if(!secp256k1_ec_pubkey_tweak_add(instanceData->context, &publicKeyData, tweak)) {
 	
 		// Return false
 		return false;
@@ -895,7 +896,7 @@ bool publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *
 	
 	// Check if serializing public key failed
 	size_t newPublicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, publicKey, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(instanceData->context, publicKey, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Return false
 		return false;
@@ -906,10 +907,10 @@ bool publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *
 }
 
 // Secret key tweak multiply
-bool secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool secretKeyTweakMultiply(InstanceData *instanceData, uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if secret key is invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -923,14 +924,14 @@ bool secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint
 	}
 
 	// Check if performing secret key tweak multiply failed
-	if(!secp256k1_ec_privkey_tweak_mul(context, secretKey, tweak)) {
+	if(!secp256k1_ec_privkey_tweak_mul(instanceData->context, secretKey, tweak)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if secret key is still invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -941,11 +942,11 @@ bool secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint
 }
 
 // Public key tweak multiply
-bool publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool publicKeyTweakMultiply(InstanceData *instanceData, uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
@@ -959,7 +960,7 @@ bool publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint
 	}
 	
 	// Check if performing public key tweak multiply failed
-	if(!secp256k1_ec_pubkey_tweak_mul(context, &publicKeyData, tweak)) {
+	if(!secp256k1_ec_pubkey_tweak_mul(instanceData->context, &publicKeyData, tweak)) {
 	
 		// Return false
 		return false;
@@ -967,7 +968,7 @@ bool publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint
 	
 	// Check if serializing public key failed
 	size_t newPublicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, publicKey, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(instanceData->context, publicKey, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Return false
 		return false;
@@ -978,10 +979,10 @@ bool publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint
 }
 
 // Shared secret key from secret key and public key
-bool sharedSecretKeyFromSecretKeyAndPublicKey(uint8_t *sharedSecretKey, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *publicKey, size_t publicKeySize) {
+bool sharedSecretKeyFromSecretKeyAndPublicKey(InstanceData *instanceData, uint8_t *sharedSecretKey, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *publicKey, size_t publicKeySize) {
 
 	// Check if secret key is invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -989,14 +990,14 @@ bool sharedSecretKeyFromSecretKeyAndPublicKey(uint8_t *sharedSecretKey, const ui
 	
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if getting the shared secret key failed
-	if(!secp256k1_ecdh(context, sharedSecretKey, &publicKeyData, secretKey)) {
+	if(!secp256k1_ecdh(instanceData->context, sharedSecretKey, &publicKeyData, secretKey)) {
 	
 		// Return false
 		return false;
@@ -1007,14 +1008,14 @@ bool sharedSecretKeyFromSecretKeyAndPublicKey(uint8_t *sharedSecretKey, const ui
 }
 
 // Commit size
-size_t commitSize() {
+size_t commitSize(InstanceData *instanceData) {
 
 	// Return commit size
 	return COMMIT_SIZE;
 }
 
 // Pedersen commit
-bool pedersenCommit(uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value) {
+bool pedersenCommit(InstanceData *instanceData, uint8_t *result, const uint8_t *blind, size_t blindSize, const char *value) {
 
 	// Check if blind is invalid
 	if(blindSize != BLIND_SIZE) {
@@ -1035,14 +1036,14 @@ bool pedersenCommit(uint8_t *result, const uint8_t *blind, size_t blindSize, con
 	
 	// Check if performing Pedersen commit failed
 	secp256k1_pedersen_commitment commit;
-	if(!secp256k1_pedersen_commit(context, &commit, blind, numericValue, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
+	if(!secp256k1_pedersen_commit(instanceData->context, &commit, blind, numericValue, &secp256k1_generator_const_h, &secp256k1_generator_const_g)) {
 		
 		// Return false
 		return false;
 	}
 	
 	// Check if serializing commit failed
-	if(!secp256k1_pedersen_commitment_serialize(context, result, &commit)) {
+	if(!secp256k1_pedersen_commitment_serialize(instanceData->context, result, &commit)) {
 		
 		// Return false
 		return false;
@@ -1053,11 +1054,11 @@ bool pedersenCommit(uint8_t *result, const uint8_t *blind, size_t blindSize, con
 }
 
 // Pedersen commit sum
-bool pedersenCommitSum(uint8_t *result, const uint8_t *positiveCommits, size_t positiveCommitsSizes[], size_t numberOfPositiveCommits, const uint8_t *negativeCommits, size_t negativeCommitsSizes[], size_t numberOfNegativeCommits) {
+bool pedersenCommitSum(InstanceData *instanceData, uint8_t *result, const uint8_t *positiveCommits, size_t positiveCommitsSizes[], size_t numberOfPositiveCommits, const uint8_t *negativeCommits, size_t negativeCommitsSizes[], size_t numberOfNegativeCommits) {
 	
 	// Go through all positive commits
-	secp256k1_pedersen_commitment positiveCommitsData[numberOfPositiveCommits];
-	const secp256k1_pedersen_commitment *positiveCommitsAddresses[numberOfPositiveCommits];
+	vector<secp256k1_pedersen_commitment> positiveCommitsData(numberOfPositiveCommits);
+	vector<const secp256k1_pedersen_commitment *> positiveCommitsAddresses(numberOfPositiveCommits);
 	size_t positiveCommitsOffset = 0;
 	
 	for(size_t i = 0; i < numberOfPositiveCommits; ++i) {
@@ -1070,7 +1071,7 @@ bool pedersenCommitSum(uint8_t *result, const uint8_t *positiveCommits, size_t p
 		}
 
 		// Check if parsing positive commit failed
-		if(!secp256k1_pedersen_commitment_parse(context, &positiveCommitsData[i], &positiveCommits[positiveCommitsOffset])) {
+		if(!secp256k1_pedersen_commitment_parse(instanceData->context, &positiveCommitsData[i], &positiveCommits[positiveCommitsOffset])) {
 		
 			// Return false
 			return false;
@@ -1084,8 +1085,8 @@ bool pedersenCommitSum(uint8_t *result, const uint8_t *positiveCommits, size_t p
 	}
 	
 	// Go through all negative commits
-	secp256k1_pedersen_commitment negativeCommitsData[numberOfNegativeCommits];
-	const secp256k1_pedersen_commitment *negativeCommitsAddresses[numberOfNegativeCommits];
+	vector<secp256k1_pedersen_commitment> negativeCommitsData(numberOfNegativeCommits);
+	vector<const secp256k1_pedersen_commitment *> negativeCommitsAddresses(numberOfNegativeCommits);
 	size_t negativeCommitsOffset = 0;
 	
 	for(size_t i = 0; i < numberOfNegativeCommits; ++i) {
@@ -1098,7 +1099,7 @@ bool pedersenCommitSum(uint8_t *result, const uint8_t *positiveCommits, size_t p
 		}
 
 		// Check if parsing negative commit failed
-		if(!secp256k1_pedersen_commitment_parse(context, &negativeCommitsData[i], &negativeCommits[negativeCommitsOffset])) {
+		if(!secp256k1_pedersen_commitment_parse(instanceData->context, &negativeCommitsData[i], &negativeCommits[negativeCommitsOffset])) {
 		
 			// Return false
 			return false;
@@ -1113,14 +1114,14 @@ bool pedersenCommitSum(uint8_t *result, const uint8_t *positiveCommits, size_t p
 	
 	// Check if performing Pedersen commit sum failed
 	secp256k1_pedersen_commitment commit;
-	if(!secp256k1_pedersen_commit_sum(context, &commit, positiveCommitsAddresses, numberOfPositiveCommits, negativeCommitsAddresses, numberOfNegativeCommits)) {
+	if(!secp256k1_pedersen_commit_sum(instanceData->context, &commit, positiveCommitsAddresses.data(), numberOfPositiveCommits, negativeCommitsAddresses.data(), numberOfNegativeCommits)) {
 		
 		// Return false
 		return false;
 	}
 	
 	// Check if serializing commit failed
-	if(!secp256k1_pedersen_commitment_serialize(context, result, &commit)) {
+	if(!secp256k1_pedersen_commitment_serialize(instanceData->context, result, &commit)) {
 		
 		// Return false
 		return false;
@@ -1131,7 +1132,7 @@ bool pedersenCommitSum(uint8_t *result, const uint8_t *positiveCommits, size_t p
 }
 
 // Pedersen commit to public key
-bool pedersenCommitToPublicKey(uint8_t *publicKey, const uint8_t *commit, size_t commitSize) {
+bool pedersenCommitToPublicKey(InstanceData *instanceData, uint8_t *publicKey, const uint8_t *commit, size_t commitSize) {
 
 	// Check if commit is invalid
 	if(commitSize != COMMIT_SIZE) {
@@ -1142,7 +1143,7 @@ bool pedersenCommitToPublicKey(uint8_t *publicKey, const uint8_t *commit, size_t
 	
 	// Check if parsing commit failed
 	secp256k1_pedersen_commitment commitData;
-	if(!secp256k1_pedersen_commitment_parse(context, &commitData, commit)) {
+	if(!secp256k1_pedersen_commitment_parse(instanceData->context, &commitData, commit)) {
 	
 		// Return false
 		return false;
@@ -1150,7 +1151,7 @@ bool pedersenCommitToPublicKey(uint8_t *publicKey, const uint8_t *commit, size_t
 	
 	// Check if performing Pedersen commit to public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_pedersen_commitment_to_pubkey(context, &publicKeyData, &commitData)) {
+	if(!secp256k1_pedersen_commitment_to_pubkey(instanceData->context, &publicKeyData, &commitData)) {
 	
 		// Return false
 		return false;
@@ -1158,7 +1159,7 @@ bool pedersenCommitToPublicKey(uint8_t *publicKey, const uint8_t *commit, size_t
 	
 	// Check if serializing public key failed
 	size_t publicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, publicKey, &publicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(instanceData->context, publicKey, &publicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Return false
 		return false;
@@ -1169,11 +1170,11 @@ bool pedersenCommitToPublicKey(uint8_t *publicKey, const uint8_t *commit, size_t
 }
 
 // Public key to Pedersen commit
-bool publicKeyToPedersenCommit(uint8_t *commit, const uint8_t *publicKey, size_t publicKeySize) {
+bool publicKeyToPedersenCommit(InstanceData *instanceData, uint8_t *commit, const uint8_t *publicKey, size_t publicKeySize) {
 
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
@@ -1181,14 +1182,14 @@ bool publicKeyToPedersenCommit(uint8_t *commit, const uint8_t *publicKey, size_t
 	
 	// Check if performing public key to Pedersen commit failed
 	secp256k1_pedersen_commitment commitData;
-	if(!secp256k1_pubkey_to_pedersen_commitment(context, &commitData, &publicKeyData)) {
+	if(!secp256k1_pubkey_to_pedersen_commitment(instanceData->context, &commitData, &publicKeyData)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if serializing commit failed
-	if(!secp256k1_pedersen_commitment_serialize(context, commit, &commitData)) {
+	if(!secp256k1_pedersen_commitment_serialize(instanceData->context, commit, &commitData)) {
 		
 		// Return false
 		return false;
@@ -1199,21 +1200,21 @@ bool publicKeyToPedersenCommit(uint8_t *commit, const uint8_t *publicKey, size_t
 }
 
 // Single-signer signature size
-size_t singleSignerSignatureSize() {
+size_t singleSignerSignatureSize(InstanceData *instanceData) {
 
 	// Return single-signer signature size
 	return SINGLE_SIGNER_SIGNATURE_SIZE;
 }
 
 // Seed size
-size_t seedSize() {
+size_t seedSize(InstanceData *instanceData) {
 
 	// Return seed size
 	return SEED_SIZE;
 }
 
 // Create single-signer signature
-bool createSingleSignerSignature(uint8_t *signature, const uint8_t *message, size_t messageSize, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *secretNonce, size_t secretNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize, const uint8_t *seed, size_t seedSize) {
+bool createSingleSignerSignature(InstanceData *instanceData, uint8_t *signature, const uint8_t *message, size_t messageSize, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *secretNonce, size_t secretNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize, const uint8_t *seed, size_t seedSize) {
 
 	// Check if message is invalid
 	if(messageSize != SINGLE_SIGNER_MESSAGE_SIZE) {
@@ -1223,7 +1224,7 @@ bool createSingleSignerSignature(uint8_t *signature, const uint8_t *message, siz
 	}
 	
 	// Check if secret key is invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -1248,14 +1249,14 @@ bool createSingleSignerSignature(uint8_t *signature, const uint8_t *message, siz
 	if(publicNonce) {
 	
 		// Check if parsing public nonce failed
-		if(!secp256k1_ec_pubkey_parse(context, &publicNonceData, publicNonce, publicNonceSize)) {
+		if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicNonceData, publicNonce, publicNonceSize)) {
 		
 			// Return false
 			return false;
 		}
 		
 		// Check if public nonce starts with a zero array
-		if(isZeroArray(&publicNonceData, 256 / BITS_IN_A_BYTE)) {
+		if(isZeroArray(instanceData, &publicNonceData, 256 / BITS_IN_A_BYTE)) {
 		
 			// Return false
 			return false;
@@ -1267,14 +1268,14 @@ bool createSingleSignerSignature(uint8_t *signature, const uint8_t *message, siz
 	if(publicNonceTotal) {
 	
 		// Check if parsing public nonce total failed
-		if(!secp256k1_ec_pubkey_parse(context, &publicNonceTotalData, publicNonceTotal, publicNonceTotalSize)) {
+		if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicNonceTotalData, publicNonceTotal, publicNonceTotalSize)) {
 		
 			// Return false
 			return false;
 		}
 		
 		// Check if public nonce total starts with a zero array
-		if(isZeroArray(&publicNonceTotalData, 256 / BITS_IN_A_BYTE)) {
+		if(isZeroArray(instanceData, &publicNonceTotalData, 256 / BITS_IN_A_BYTE)) {
 		
 			// Return false
 			return false;
@@ -1283,14 +1284,14 @@ bool createSingleSignerSignature(uint8_t *signature, const uint8_t *message, siz
 	
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if public key starts with a zero array
-	if(isZeroArray(&publicKeyData, 256 / BITS_IN_A_BYTE)) {
+	if(isZeroArray(instanceData, &publicKeyData, 256 / BITS_IN_A_BYTE)) {
 	
 		// Return false
 		return false;
@@ -1298,14 +1299,14 @@ bool createSingleSignerSignature(uint8_t *signature, const uint8_t *message, siz
 	
 	// Check if creating single-signer signature failed
 	secp256k1_ecdsa_signature signatureData;
-	if(!secp256k1_aggsig_sign_single(context, reinterpret_cast<uint8_t *>(&signatureData), message, secretKey, secretNonce, nullptr, publicNonce ? &publicNonceData : nullptr, publicNonceTotal ? &publicNonceTotalData : nullptr, &publicKeyData, seed)) {
+	if(!secp256k1_aggsig_sign_single(instanceData->context, reinterpret_cast<uint8_t *>(&signatureData), message, secretKey, secretNonce, nullptr, publicNonce ? &publicNonceData : nullptr, publicNonceTotal ? &publicNonceTotalData : nullptr, &publicKeyData, seed)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if serializing signature failed
-	if(!secp256k1_ecdsa_signature_serialize_compact(context, signature, &signatureData)) {
+	if(!secp256k1_ecdsa_signature_serialize_compact(instanceData->context, signature, &signatureData)) {
 	
 		// Return false
 		return false;
@@ -1316,11 +1317,11 @@ bool createSingleSignerSignature(uint8_t *signature, const uint8_t *message, siz
 }
 
 // Add single-signer signatures
-bool addSingleSignerSignatures(uint8_t *result, const uint8_t *signatures, size_t signaturesSizes[], size_t numberOfSignatures, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize) {
+bool addSingleSignerSignatures(InstanceData *instanceData, uint8_t *result, const uint8_t *signatures, size_t signaturesSizes[], size_t numberOfSignatures, const uint8_t *publicNonceTotal, size_t publicNonceTotalSize) {
 
 	// Go through all signatures
-	secp256k1_ecdsa_signature signaturesData[numberOfSignatures];
-	const uint8_t *signaturesAddresses[numberOfSignatures];
+	vector<secp256k1_ecdsa_signature> signaturesData(numberOfSignatures);
+	vector<const uint8_t *> signaturesAddresses(numberOfSignatures);
 	size_t signaturesOffset = 0;
 	
 	for(size_t i = 0; i < numberOfSignatures; ++i) {
@@ -1333,7 +1334,7 @@ bool addSingleSignerSignatures(uint8_t *result, const uint8_t *signatures, size_
 		}
 		
 		// Check if parsing signature failed
-		if(!secp256k1_ecdsa_signature_parse_compact(context, &signaturesData[i], &signatures[signaturesOffset])) {
+		if(!secp256k1_ecdsa_signature_parse_compact(instanceData->context, &signaturesData[i], &signatures[signaturesOffset])) {
 		
 			// Return false
 			return false;
@@ -1348,7 +1349,7 @@ bool addSingleSignerSignatures(uint8_t *result, const uint8_t *signatures, size_
 	
 	// Check if parsing public nonce total failed
 	secp256k1_pubkey publicNonceTotalData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicNonceTotalData, publicNonceTotal, publicNonceTotalSize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicNonceTotalData, publicNonceTotal, publicNonceTotalSize)) {
 	
 		// Return false
 		return false;
@@ -1356,14 +1357,14 @@ bool addSingleSignerSignatures(uint8_t *result, const uint8_t *signatures, size_
 	
 	// Check if adding single-signer signatures failed
 	secp256k1_ecdsa_signature signatureData;
-	if(!secp256k1_aggsig_add_signatures_single(context, reinterpret_cast<uint8_t *>(&signatureData), signaturesAddresses, numberOfSignatures, &publicNonceTotalData)) {
+	if(!secp256k1_aggsig_add_signatures_single(instanceData->context, reinterpret_cast<uint8_t *>(&signatureData), signaturesAddresses.data(), numberOfSignatures, &publicNonceTotalData)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if serializing signature failed
-	if(!secp256k1_ecdsa_signature_serialize_compact(context, result, &signatureData)) {
+	if(!secp256k1_ecdsa_signature_serialize_compact(instanceData->context, result, &signatureData)) {
 	
 		// Return false
 		return false;
@@ -1374,7 +1375,7 @@ bool addSingleSignerSignatures(uint8_t *result, const uint8_t *signatures, size_
 }
 
 // Verify single-signer signatures
-bool verifySingleSignerSignature(const uint8_t *signature, size_t signatureSize, const uint8_t *message, size_t messageSize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicKeyTotal, size_t publicKeyTotalSize, bool isPartial) {
+bool verifySingleSignerSignature(InstanceData *instanceData, const uint8_t *signature, size_t signatureSize, const uint8_t *message, size_t messageSize, const uint8_t *publicNonce, size_t publicNonceSize, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *publicKeyTotal, size_t publicKeyTotalSize, bool isPartial) {
 
 	// Check if signature is invalid
 	if(signatureSize != SINGLE_SIGNER_SIGNATURE_SIZE) {
@@ -1385,14 +1386,14 @@ bool verifySingleSignerSignature(const uint8_t *signature, size_t signatureSize,
 	
 	// Check if parsing signature failed
 	secp256k1_ecdsa_signature signatureData;
-	if(!secp256k1_ecdsa_signature_parse_compact(context, &signatureData, signature)) {
+	if(!secp256k1_ecdsa_signature_parse_compact(instanceData->context, &signatureData, signature)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if signature starts with a zero array
-	if(isZeroArray(&signatureData, 256 / BITS_IN_A_BYTE)) {
+	if(isZeroArray(instanceData, &signatureData, 256 / BITS_IN_A_BYTE)) {
 	
 		// Return false
 		return false;
@@ -1410,14 +1411,14 @@ bool verifySingleSignerSignature(const uint8_t *signature, size_t signatureSize,
 	if(publicNonce) {
 	
 		// Check if parsing public nonce failed
-		if(!secp256k1_ec_pubkey_parse(context, &publicNonceData, publicNonce, publicNonceSize)) {
+		if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicNonceData, publicNonce, publicNonceSize)) {
 		
 			// Return false
 			return false;
 		}
 		
 		// Check if public nonce starts with a zero array
-		if(isZeroArray(&publicNonceData, 256 / BITS_IN_A_BYTE)) {
+		if(isZeroArray(instanceData, &publicNonceData, 256 / BITS_IN_A_BYTE)) {
 		
 			// Return false
 			return false;
@@ -1426,14 +1427,14 @@ bool verifySingleSignerSignature(const uint8_t *signature, size_t signatureSize,
 	
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if public key starts with a zero array
-	if(isZeroArray(&publicKeyData, 256 / BITS_IN_A_BYTE)) {
+	if(isZeroArray(instanceData, &publicKeyData, 256 / BITS_IN_A_BYTE)) {
 	
 		// Return false
 		return false;
@@ -1441,21 +1442,21 @@ bool verifySingleSignerSignature(const uint8_t *signature, size_t signatureSize,
 	
 	// Check if parsing public key total failed
 	secp256k1_pubkey publicKeyTotalData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyTotalData, publicKeyTotal, publicKeyTotalSize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyTotalData, publicKeyTotal, publicKeyTotalSize)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if public key total starts with a zero array
-	if(isZeroArray(&publicKeyTotalData, 256 / BITS_IN_A_BYTE)) {
+	if(isZeroArray(instanceData, &publicKeyTotalData, 256 / BITS_IN_A_BYTE)) {
 	
 		// Return false
 		return false;
 	}
 
 	// Check if verifying single-signer signature failed
-	if(!secp256k1_aggsig_verify_single(context, reinterpret_cast<uint8_t *>(&signatureData), message, publicNonce ? &publicNonceData : nullptr, &publicKeyData, &publicKeyTotalData, nullptr, isPartial)) {
+	if(!secp256k1_aggsig_verify_single(instanceData->context, reinterpret_cast<uint8_t *>(&signatureData), message, publicNonce ? &publicNonceData : nullptr, &publicKeyData, &publicKeyTotalData, nullptr, isPartial)) {
 	
 		// Return false
 		return false;
@@ -1466,7 +1467,7 @@ bool verifySingleSignerSignature(const uint8_t *signature, size_t signatureSize,
 }
 
 // Single-signer signature from data
-bool singleSignerSignatureFromData(uint8_t *signature, const uint8_t *data, size_t dataSize) {
+bool singleSignerSignatureFromData(InstanceData *instanceData, uint8_t *signature, const uint8_t *data, size_t dataSize) {
 
 	// Check if data size is invalid
 	if(dataSize != SINGLE_SIGNER_SIGNATURE_SIZE) {
@@ -1477,14 +1478,14 @@ bool singleSignerSignatureFromData(uint8_t *signature, const uint8_t *data, size
 
 	// Check if creating signature from data failed
 	secp256k1_ecdsa_signature signatureData;
-	if(!secp256k1_ecdsa_signature_parse_compact(context, &signatureData, data)) {
+	if(!secp256k1_ecdsa_signature_parse_compact(instanceData->context, &signatureData, data)) {
 	
 		// Return false
 		return false;
 	}
 
 	// Check if serializing signature failed
-	if(!secp256k1_ecdsa_signature_serialize_compact(context, signature, &signatureData)) {
+	if(!secp256k1_ecdsa_signature_serialize_compact(instanceData->context, signature, &signatureData)) {
 	
 		// Return false
 		return false;
@@ -1495,14 +1496,14 @@ bool singleSignerSignatureFromData(uint8_t *signature, const uint8_t *data, size
 }
 
 // Uncompact single-signer signature size
-size_t uncompactSingleSignerSignatureSize() {
+size_t uncompactSingleSignerSignatureSize(InstanceData *instanceData) {
 
 	// Return uncompact single-signer signature size
 	return sizeof(secp256k1_ecdsa_signature);
 }
 
 // Compact single-signer signature
-bool compactSingleSignerSignature(uint8_t *result, const uint8_t *signature, size_t signatureSize) {
+bool compactSingleSignerSignature(InstanceData *instanceData, uint8_t *result, const uint8_t *signature, size_t signatureSize) {
 
 	// Check if signature size is invalid
 	if(signatureSize != sizeof(secp256k1_ecdsa_signature)) {
@@ -1512,7 +1513,7 @@ bool compactSingleSignerSignature(uint8_t *result, const uint8_t *signature, siz
 	}
 	
 	// Check if serializing signature failed
-	if(!secp256k1_ecdsa_signature_serialize_compact(context, result, reinterpret_cast<const secp256k1_ecdsa_signature *>(signature))) {
+	if(!secp256k1_ecdsa_signature_serialize_compact(instanceData->context, result, reinterpret_cast<const secp256k1_ecdsa_signature *>(signature))) {
 	
 		// Return false
 		return false;
@@ -1523,7 +1524,7 @@ bool compactSingleSignerSignature(uint8_t *result, const uint8_t *signature, siz
 }
 
 // Uncompact single-signer signature
-bool uncompactSingleSignerSignature(uint8_t *result, const uint8_t *signature, size_t signatureSize) {
+bool uncompactSingleSignerSignature(InstanceData *instanceData, uint8_t *result, const uint8_t *signature, size_t signatureSize) {
 
 	// Check if signature size is invalid
 	if(signatureSize != SINGLE_SIGNER_SIGNATURE_SIZE) {
@@ -1533,7 +1534,7 @@ bool uncompactSingleSignerSignature(uint8_t *result, const uint8_t *signature, s
 	}
 	
 	// Check if unserializing signature failed
-	if(!secp256k1_ecdsa_signature_parse_compact(context, reinterpret_cast<secp256k1_ecdsa_signature *>(result), signature)) {
+	if(!secp256k1_ecdsa_signature_parse_compact(instanceData->context, reinterpret_cast<secp256k1_ecdsa_signature *>(result), signature)) {
 	
 		// Return false
 		return false;
@@ -1544,17 +1545,17 @@ bool uncompactSingleSignerSignature(uint8_t *result, const uint8_t *signature, s
 }
 
 // Combine public keys
-bool combinePublicKeys(uint8_t *result, const uint8_t *publicKeys, size_t publicKeysSizes[], size_t numberOfPublicKeys) {
+bool combinePublicKeys(InstanceData *instanceData, uint8_t *result, const uint8_t *publicKeys, size_t publicKeysSizes[], size_t numberOfPublicKeys) {
 
 	// Go through all publc keys
-	secp256k1_pubkey publicKeysData[numberOfPublicKeys];
-	const secp256k1_pubkey *publicKeysAddresses[numberOfPublicKeys];
+	vector<secp256k1_pubkey> publicKeysData(numberOfPublicKeys);
+	vector<const secp256k1_pubkey *> publicKeysAddresses(numberOfPublicKeys);
 	size_t publicKeysOffset = 0;
 	
 	for(size_t i = 0; i < numberOfPublicKeys; ++i) {
 	
 		// Check if parsing public key failed
-		if(!secp256k1_ec_pubkey_parse(context, &publicKeysData[i], &publicKeys[publicKeysOffset], publicKeysSizes[i])) {
+		if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeysData[i], &publicKeys[publicKeysOffset], publicKeysSizes[i])) {
 		
 			// Return false
 			return false;
@@ -1569,7 +1570,7 @@ bool combinePublicKeys(uint8_t *result, const uint8_t *publicKeys, size_t public
 
 	// Check if combining public keys failed
 	secp256k1_pubkey combinedPublicKeysData;
-	if(!secp256k1_ec_pubkey_combine(context, &combinedPublicKeysData, publicKeysAddresses, numberOfPublicKeys)) {
+	if(!secp256k1_ec_pubkey_combine(instanceData->context, &combinedPublicKeysData, publicKeysAddresses.data(), numberOfPublicKeys)) {
 	
 		// Return false
 		return false;
@@ -1577,7 +1578,7 @@ bool combinePublicKeys(uint8_t *result, const uint8_t *publicKeys, size_t public
 	
 	// Check if serializing combined public key failed
 	size_t combinedPublicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, result, &combinedPublicKeySize, &combinedPublicKeysData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(instanceData->context, result, &combinedPublicKeySize, &combinedPublicKeysData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Return false
 		return false;
@@ -1588,14 +1589,14 @@ bool combinePublicKeys(uint8_t *result, const uint8_t *publicKeys, size_t public
 }
 
 // Nonce size
-size_t nonceSize() {
+size_t nonceSize(InstanceData *instanceData) {
 
 	// Return nonce size
 	return NONCE_SIZE;
 }
 
 // Create secret nonce
-bool createSecretNonce(uint8_t *nonce, const uint8_t *seed, size_t seedSize) {
+bool createSecretNonce(InstanceData *instanceData, uint8_t *nonce, const uint8_t *seed, size_t seedSize) {
 
 	// Check if seed is invalid
 	if(seedSize != SEED_SIZE) {
@@ -1605,7 +1606,7 @@ bool createSecretNonce(uint8_t *nonce, const uint8_t *seed, size_t seedSize) {
 	}
 
 	// Check if creating a secret nonce failed
-	if(!secp256k1_aggsig_export_secnonce_single(context, nonce, seed)) {
+	if(!secp256k1_aggsig_export_secnonce_single(instanceData->context, nonce, seed)) {
 	
 		// Return false
 		return false;
@@ -1616,14 +1617,14 @@ bool createSecretNonce(uint8_t *nonce, const uint8_t *seed, size_t seedSize) {
 }
 
 // Maximum message hash signature size
-size_t maximumMessageHashSignatureSize() {
+size_t maximumMessageHashSignatureSize(InstanceData *instanceData) {
 
 	// Return maximum message hash signature size
 	return MAXIMUM_MESSAGE_HASH_SIGNATURE_SIZE;
 }
 
 // Create message hash signature
-bool createMessageHashSignature(uint8_t *signature, char *signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *secretKey, size_t secretKeySize) {
+bool createMessageHashSignature(InstanceData *instanceData, uint8_t *signature, char *signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *secretKey, size_t secretKeySize) {
 
 	// Check if message hash is invalid
 	if(messageHashSize != MESSAGE_HASH_SIZE) {
@@ -1633,7 +1634,7 @@ bool createMessageHashSignature(uint8_t *signature, char *signatureSize, const u
 	}
 	
 	// Check if secret key is invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	if(!isValidSecretKey(instanceData, secretKey, secretKeySize)) {
 	
 		// Return false
 		return false;
@@ -1641,7 +1642,7 @@ bool createMessageHashSignature(uint8_t *signature, char *signatureSize, const u
 	
 	// Check if signing the message hash failed
 	secp256k1_ecdsa_signature signatureData;
-	if(!secp256k1_ecdsa_sign(context, &signatureData, messageHash, secretKey, secp256k1_nonce_function_rfc6979, nullptr)) {
+	if(!secp256k1_ecdsa_sign(instanceData->context, &signatureData, messageHash, secretKey, secp256k1_nonce_function_rfc6979, nullptr)) {
 	
 		// Return false
 		return false;
@@ -1649,7 +1650,7 @@ bool createMessageHashSignature(uint8_t *signature, char *signatureSize, const u
 	
 	// Check if serializing signature failed
 	size_t numericSignatureSize = MAXIMUM_MESSAGE_HASH_SIGNATURE_SIZE;
-	if(!secp256k1_ecdsa_signature_serialize_der(context, signature, &numericSignatureSize, &signatureData)) {
+	if(!secp256k1_ecdsa_signature_serialize_der(instanceData->context, signature, &numericSignatureSize, &signatureData)) {
 	
 		// Return false
 		return false;
@@ -1664,7 +1665,7 @@ bool createMessageHashSignature(uint8_t *signature, char *signatureSize, const u
 }
 
 // Verify message hash signature
-bool verifyMessageHashSignature(const uint8_t *signature, size_t signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *publicKey, size_t publicKeySize) {
+bool verifyMessageHashSignature(InstanceData *instanceData, const uint8_t *signature, size_t signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *publicKey, size_t publicKeySize) {
 
 	// Check if signature is invalid
 	if(signatureSize > MAXIMUM_MESSAGE_HASH_SIGNATURE_SIZE) {
@@ -1675,7 +1676,7 @@ bool verifyMessageHashSignature(const uint8_t *signature, size_t signatureSize, 
 	
 	// Check if parsing signature failed
 	secp256k1_ecdsa_signature signatureData;
-	if(!secp256k1_ecdsa_signature_parse_der(context, &signatureData, signature, signatureSize)) {
+	if(!secp256k1_ecdsa_signature_parse_der(instanceData->context, &signatureData, signature, signatureSize)) {
 	
 		// Return false
 		return false;
@@ -1690,14 +1691,14 @@ bool verifyMessageHashSignature(const uint8_t *signature, size_t signatureSize, 
 	
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
-	if(!secp256k1_ec_pubkey_parse(context, &publicKeyData, publicKey, publicKeySize)) {
+	if(!secp256k1_ec_pubkey_parse(instanceData->context, &publicKeyData, publicKey, publicKeySize)) {
 	
 		// Return false
 		return false;
 	}
 	
 	// Check if verifying signature failed
-	if(!secp256k1_ecdsa_verify(context, &signatureData, messageHash, &publicKeyData)) {
+	if(!secp256k1_ecdsa_verify(instanceData->context, &signatureData, messageHash, &publicKeyData)) {
 	
 		// Return false
 		return false;
@@ -1708,12 +1709,12 @@ bool verifyMessageHashSignature(const uint8_t *signature, size_t signatureSize, 
 }
 
 // Is zero array
-bool isZeroArray(void *value, size_t size) {
+bool isZeroArray(InstanceData *instanceData, void *value, size_t size) {
 
 	// Create zeros buffer
-	uint8_t zerosBuffer[size];
-	explicit_bzero(zerosBuffer, size);
+	vector<uint8_t> zerosBuffer(size);
+	explicit_bzero(zerosBuffer.data(), size);
 	
 	// Return if value is equal to the zero buffer
-	return !memcmp(value, zerosBuffer, size);
+	return !memcmp(value, zerosBuffer.data(), size);
 }
