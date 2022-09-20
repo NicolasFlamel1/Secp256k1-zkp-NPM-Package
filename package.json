@@ -5,7 +5,8 @@
 	"main": "./index.js",
 	"files": [
 		"*",
-		"!main.cpp"
+		"!main.cpp",
+		"!tests.js"
 	],
 	"repository": {
 		"type": "git",
