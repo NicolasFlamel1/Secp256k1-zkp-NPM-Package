@@ -196,16 +196,16 @@ EXPORT bool EMSCRIPTEN_KEEPALIVE uncompressPublicKey(uint8_t *uncompressedPublic
 EXPORT size_t EMSCRIPTEN_KEEPALIVE secretKeySize();
 
 // Secret key tweak add
-EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakAdd(uint8_t *result, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Public key tweak add
-EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakAdd(uint8_t *result, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Secret key tweak multiply
-EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE secretKeyTweakMultiply(uint8_t *result, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Public key tweak multiply
-EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
+EXPORT bool EMSCRIPTEN_KEEPALIVE publicKeyTweakMultiply(uint8_t *result, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize);
 
 // Shared secret key from secret key and public key
 EXPORT bool EMSCRIPTEN_KEEPALIVE sharedSecretKeyFromSecretKeyAndPublicKey(uint8_t *sharedSecretKey, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *publicKey, size_t publicKeySize);
@@ -835,7 +835,7 @@ size_t secretKeySize() {
 }
 
 // Secret key tweak add
-bool secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool secretKeyTweakAdd(uint8_t *result, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if secret key is invalid and it's not zero
 	if(!isValidSecretKey(secretKey, secretKeySize) && !isZeroArray(secretKey, secretKeySize)) {
@@ -850,16 +850,25 @@ bool secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *
 		// Return false
 		return false;
 	}
+	
+	// Set result to secret key
+	memcpy(result, secretKey, secretKeySize);
 
 	// Check if performing secret key tweak add failed
-	if(!secp256k1_ec_privkey_tweak_add(context, secretKey, tweak)) {
+	if(!secp256k1_ec_privkey_tweak_add(context, result, tweak)) {
+	
+		// Clear memory
+		explicit_bzero(result, secretKeySize);
 	
 		// Return false
 		return false;
 	}
 	
-	// Check if secret key is invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	// Check if result is invalid
+	if(!isValidSecretKey(result, secretKeySize)) {
+	
+		// Clear memory
+		explicit_bzero(result, secretKeySize);
 	
 		// Return false
 		return false;
@@ -870,7 +879,7 @@ bool secretKeyTweakAdd(uint8_t *secretKey, size_t secretKeySize, const uint8_t *
 }
 
 // Public key tweak add
-bool publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool publicKeyTweakAdd(uint8_t *result, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
@@ -896,7 +905,7 @@ bool publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *
 	
 	// Check if serializing public key failed
 	size_t newPublicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, publicKey, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(context, result, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Return false
 		return false;
@@ -907,7 +916,7 @@ bool publicKeyTweakAdd(uint8_t *publicKey, size_t publicKeySize, const uint8_t *
 }
 
 // Secret key tweak multiply
-bool secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool secretKeyTweakMultiply(uint8_t *result, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if secret key is invalid
 	if(!isValidSecretKey(secretKey, secretKeySize)) {
@@ -922,16 +931,25 @@ bool secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint
 		// Return false
 		return false;
 	}
+	
+	// Set result to secret key
+	memcpy(result, secretKey, secretKeySize);
 
 	// Check if performing secret key tweak multiply failed
-	if(!secp256k1_ec_privkey_tweak_mul(context, secretKey, tweak)) {
+	if(!secp256k1_ec_privkey_tweak_mul(context, result, tweak)) {
+	
+		// Clear memory
+		explicit_bzero(result, secretKeySize);
 	
 		// Return false
 		return false;
 	}
 	
-	// Check if secret key is still invalid
-	if(!isValidSecretKey(secretKey, secretKeySize)) {
+	// Check if result is still invalid
+	if(!isValidSecretKey(result, secretKeySize)) {
+	
+		// Clear memory
+		explicit_bzero(result, secretKeySize);
 	
 		// Return false
 		return false;
@@ -942,7 +960,7 @@ bool secretKeyTweakMultiply(uint8_t *secretKey, size_t secretKeySize, const uint
 }
 
 // Public key tweak multiply
-bool publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
+bool publicKeyTweakMultiply(uint8_t *result, const uint8_t *publicKey, size_t publicKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if parsing public key failed
 	secp256k1_pubkey publicKeyData;
@@ -968,7 +986,7 @@ bool publicKeyTweakMultiply(uint8_t *publicKey, size_t publicKeySize, const uint
 	
 	// Check if serializing public key failed
 	size_t newPublicKeySize = PUBLIC_KEY_SIZE;
-	if(!secp256k1_ec_pubkey_serialize(context, publicKey, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
+	if(!secp256k1_ec_pubkey_serialize(context, result, &newPublicKeySize, &publicKeyData, SECP256K1_EC_COMPRESSED)) {
 	
 		// Return false
 		return false;

@@ -1,6 +1,6 @@
 {
 	"name": "@nicolasflamel/secp256k1-zkp",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "NPM package for parts of libsecp256k1-zkp",
 	"main": "./index.js",
 	"files": [
@@ -20,10 +20,10 @@
 		"url": "https://github.com/NicolasFlamel1/Secp256k1-zkp-NPM-Package/issues"
 	},
 	"dependencies": {
-		"@nicolasflamel/secp256k1-zkp-wasm": "^0.0.24"
+		"@nicolasflamel/secp256k1-zkp-wasm": "^0.0.25"
 	},
 	"optionalDependencies": {
-		"@nicolasflamel/secp256k1-zkp-native": "^0.0.21",
-		"@nicolasflamel/secp256k1-zkp-react": "^0.0.8"
+		"@nicolasflamel/secp256k1-zkp-native": "^0.0.22",
+		"@nicolasflamel/secp256k1-zkp-react": "^0.0.9"
 	}
 }
