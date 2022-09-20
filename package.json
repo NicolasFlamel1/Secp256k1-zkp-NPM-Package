@@ -24,6 +24,6 @@
 	},
 	"optionalDependencies": {
 		"@nicolasflamel/secp256k1-zkp-native": "^0.0.22",
-		"@nicolasflamel/secp256k1-zkp-react": "^0.0.9"
+		"@nicolasflamel/secp256k1-zkp-react": "^0.0.8"
 	}
 }
