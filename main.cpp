@@ -271,7 +271,7 @@ EXPORT bool EMSCRIPTEN_KEEPALIVE createMessageHashSignature(uint8_t *signature, 
 EXPORT bool EMSCRIPTEN_KEEPALIVE verifyMessageHashSignature(const uint8_t *signature, size_t signatureSize, const uint8_t *messageHash, size_t messageHashSize, const uint8_t *publicKey, size_t publicKeySize);
 
 // Is zero array
-static bool isZeroArray(void *value, size_t size);
+static bool isZeroArray(const void *value, size_t size);
 
 
 // Supporting function implementation
@@ -1727,7 +1727,7 @@ bool verifyMessageHashSignature(const uint8_t *signature, size_t signatureSize, 
 }
 
 // Is zero array
-bool isZeroArray(void *value, size_t size) {
+bool isZeroArray(const void *value, size_t size) {
 
 	// Create zeros buffer
 	vector<uint8_t> zerosBuffer(size);
