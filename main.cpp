@@ -133,7 +133,7 @@ static secp256k1_bulletproof_generators *generators = nullptr;
 // Function prototypes
 
 // Initialize
-EXPORT bool EMSCRIPTEN_KEEPALIVE initialize();
+EXPORT bool EMSCRIPTEN_KEEPALIVE initialize(const uint8_t *seed, size_t seedSize);
 
 // Uninistalize
 EXPORT bool EMSCRIPTEN_KEEPALIVE uninitialize();
@@ -277,11 +277,25 @@ static bool isZeroArray(const void *value, size_t size);
 // Supporting function implementation
 
 // Initialize
-bool initialize() {
+bool initialize(const uint8_t *seed, size_t seedSize) {
 
+	// Check if seed is invalid
+	if(seedSize != SEED_SIZE) {
+	
+		// Return false
+		return false;
+	}
+	
 	// Check if creating context failed
 	context = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
 	if(!context) {
+	
+		// Return false
+		return false;
+	}
+	
+	// Check if randomizing context failed
+	if(!secp256k1_context_randomize(context, seed)) {
 	
 		// Return false
 		return false;
