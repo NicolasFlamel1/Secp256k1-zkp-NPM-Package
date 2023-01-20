@@ -852,7 +852,7 @@ size_t secretKeySize() {
 bool secretKeyTweakAdd(uint8_t *result, const uint8_t *secretKey, size_t secretKeySize, const uint8_t *tweak, size_t tweakSize) {
 
 	// Check if secret key is invalid and it's not zero
-	if(!isValidSecretKey(secretKey, secretKeySize) && !isZeroArray(secretKey, secretKeySize)) {
+	if((!isValidSecretKey(secretKey, secretKeySize) && !isZeroArray(secretKey, secretKeySize)) || secretKeySize != SECRET_KEY_SIZE) {
 	
 		// Return false
 		return false;
